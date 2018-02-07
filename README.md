@@ -1,6 +1,6 @@
 # SuperCalendar
 
-日历控件
+展开收起控件
 [![](https://jitpack.io/v/yinjinyj/ExpandTextView.svg)](https://jitpack.io/#yinjinyj/ExpandTextView)
 
 使用方法
@@ -24,7 +24,8 @@ Step 3该控件可以单独使用，也可以配合RecycleView一起使用，只
 
 常见方法说明：
  1:使用ExpandTextView必须使用里面的
-     /**
+
+         /**
          * 设置要显示的文字以及状态
          * @param text
          * @param expanded true：展开，false：收起
