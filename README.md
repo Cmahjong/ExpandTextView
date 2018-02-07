@@ -41,7 +41,9 @@ Step 3该控件可以单独使用，也可以配合RecycleView一起使用，只
         }
  
  2，你也可以设置：
-        最多展示的行数               maxLineCount
+
+        最多展示的行数               max上班
+        LineCount
         省略文字的文案               ellipsizeText
         展开文案文字                 expandText
         展开文案文字颜色             expandTextColor
@@ -49,8 +51,9 @@ Step 3该控件可以单独使用，也可以配合RecycleView一起使用，只
         收起文案文字颜色             collapseTextColor
         是否支持收起功能             collapseEnable
         是否添加展开收起的下划线     underlineEnable
+
 3，你也可以参考demo,demo就是一个RecycleView
 效果图
 
-![gif](/img/1.gif)
+![sample](/gif/1.gif)
 
