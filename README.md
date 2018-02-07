@@ -44,7 +44,7 @@ Step 3该控件可以单独使用，也可以配合RecycleView一起使用，只
             setText(text)
         }
  
- 2，你也可以设置：
+ 2，扩张属性：
 
         最多展示的行数               maxLineCount
         省略文字的文案               ellipsizeText
@@ -55,6 +55,6 @@ Step 3该控件可以单独使用，也可以配合RecycleView一起使用，只
         是否支持收起功能             collapseEnable
         是否添加展开收起的下划线     underlineEnable
 
-3，你也可以参考demo,demo就是一个RecycleView
+3，具体代码可以可以参考demo
 
 
