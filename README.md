@@ -3,6 +3,10 @@
 展开收起控件
 [![](https://jitpack.io/v/yinjinyj/ExpandTextView.svg)](https://jitpack.io/#yinjinyj/ExpandTextView)
 
+其他先不说先看效果图
+
+![sample](/gif/1.gif)
+
 使用方法
 
 Step 1 Add it in your root build.gradle at the end of repositories:
@@ -53,7 +57,5 @@ Step 3该控件可以单独使用，也可以配合RecycleView一起使用，只
         是否添加展开收起的下划线     underlineEnable
 
 3，你也可以参考demo,demo就是一个RecycleView
-效果图
 
-![sample](/gif/1.gif)
 
