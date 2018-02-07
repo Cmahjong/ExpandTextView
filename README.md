@@ -46,8 +46,7 @@ Step 3该控件可以单独使用，也可以配合RecycleView一起使用，只
  
  2，你也可以设置：
 
-        最多展示的行数               max上班
-        LineCount
+        最多展示的行数               maxLineCount
         省略文字的文案               ellipsizeText
         展开文案文字                 expandText
         展开文案文字颜色             expandTextColor
