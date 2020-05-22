@@ -3,7 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ExpandTextView.iml" filepath="$PROJECT_DIR$/ExpandTextView.iml" />
-      <module fileurl="file://F:\data\ExpandTextView\sample\app.iml" filepath="F:\data\ExpandTextView\sample\app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/library/ExpandTextView-library.iml" filepath="$PROJECT_DIR$/library/ExpandTextView-library.iml" group="ExpandTextView/library" />
+      <module fileurl="file://$PROJECT_DIR$/sample/ExpandTextView-sample.iml" filepath="$PROJECT_DIR$/sample/ExpandTextView-sample.iml" group="ExpandTextView/sample" />
+      <module fileurl="file://$PROJECT_DIR$/android-ExpandTextView.iml" filepath="$PROJECT_DIR$/android-ExpandTextView.iml" group="ExpandTextView" />
+      <module fileurl="file://F:/data/ExpandTextView/sample/app.iml" filepath="F:/data/ExpandTextView/sample/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
     </modules>

@@ -2,7 +2,7 @@ package com.yinjin.demo.adapter
 
 import android.graphics.Color
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.BaseViewHolder
+import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.yinjin.demo.R
 import com.yinjin.demo.bean.DemoBean
 import com.yinjin.expandtextview.Callback
@@ -14,10 +14,10 @@ import com.yinjin.expandtextview.ExpandTextView
  * @author yinYin
  */
 class DemoAdapter : BaseQuickAdapter<DemoBean, BaseViewHolder>(R.layout.item) {
-    override fun convert(helper: BaseViewHolder?, item: DemoBean?) {
-        helper?.apply {
-            setText(R.id.tv_title, item?.title)
-            setText(R.id.tv_time, item?.time)
+    override fun convert(helper: BaseViewHolder, item: DemoBean) {
+        helper.apply {
+            setText(R.id.tv_title, item.title)
+            setText(R.id.tv_time, item.time)
             val expandTextView = getView<ExpandTextView>(R.id.tv_content)
             //设置最大显示行数
             expandTextView.maxLineCount=3
@@ -33,7 +33,7 @@ class DemoAdapter : BaseQuickAdapter<DemoBean, BaseViewHolder>(R.layout.item) {
             expandTextView.collapseTextColor = Color.parseColor("#FF1C7FFD")
             //展开文案颜色
             expandTextView.expandTextColor = Color.parseColor("#FFA66BF9")
-            expandTextView.setText(item?.content!!, item.state, object : Callback {
+            expandTextView.setText(item.content, item.state, object : Callback {
                 override fun onExpand() {
 
                 }

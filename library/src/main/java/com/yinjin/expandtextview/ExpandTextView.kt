@@ -1,16 +1,21 @@
 package com.yinjin.expandtextview
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
-import android.support.v7.widget.AppCompatTextView
-import android.text.*
+import android.os.Build
+import android.text.Layout
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.StaticLayout
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
 import android.util.AttributeSet
 import android.view.View
+import androidx.appcompat.widget.AppCompatTextView
 
 
 /**
@@ -58,6 +63,7 @@ class ExpandTextView : AppCompatTextView {
         initTextView()
     }
 
+    @SuppressLint("DrawAllocation")
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         // 文字计算辅助工具
@@ -65,7 +71,28 @@ class ExpandTextView : AppCompatTextView {
             setMeasuredDimension(measuredWidth, measuredHeight)
         }
         //StaticLayout对象
-        val sl = StaticLayout(mText, paint, measuredWidth - paddingLeft - paddingRight, Layout.Alignment.ALIGN_CENTER, 1f, 0f, true)
+        val sl = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            StaticLayout.Builder.obtain(
+                mText ?: "",
+                0,
+                mText?.length ?: 0,
+                paint,
+                measuredWidth - paddingLeft - paddingRight
+            ).apply {
+                setAlignment(Layout.Alignment.ALIGN_CENTER)
+            }.build()
+        } else {
+            StaticLayout(
+                mText,
+                paint,
+                measuredWidth - paddingLeft - paddingRight,
+                Layout.Alignment.ALIGN_CENTER,
+                1f,
+                0f,
+                true
+            )
+        }
+
         // 总计行数
         var lineCount = sl.lineCount
         //总行数大于最大行数
@@ -78,25 +105,41 @@ class ExpandTextView : AppCompatTextView {
                     val newEndLineText = mText + collapseText
                     //收起文案和源文字组成的新的文字
                     val spannableString = SpannableString(newEndLineText)
-                    //给收起设成监听
-                    spannableString.setSpan(object : ClickableSpan() {
-                        override fun onClick(widget: View?) {
-                            if (mCallback != null) {
-                                mCallback!!.onCollapseClick()
+                        .apply {
+                            //给收起设成监听
+                            setSpan(
+                                object : ClickableSpan() {
+                                    override fun onClick(widget: View) {
+                                        if (mCallback != null) {
+                                            mCallback!!.onCollapseClick()
+                                        }
+                                    }
+
+                                },
+                                newEndLineText.length - collapseText.length,
+                                newEndLineText.length,
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
+                            if (underlineEnable) {
+                                //给收起添加下划线
+                                setSpan(
+                                    UnderlineSpan(),
+                                    newEndLineText.length - collapseText.length,
+                                    newEndLineText.length,
+                                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                                )
                             }
+                            //给收起设成蓝色
+                            setSpan(
+                                ForegroundColorSpan(collapseTextColor),
+                                newEndLineText.length - collapseText.length,
+                                newEndLineText.length,
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
                         }
-                    }, newEndLineText.length - collapseText.length, newEndLineText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    if (underlineEnable) {
-                        //给收起添加下划线
-                        spannableString.setSpan(UnderlineSpan(), newEndLineText.length - collapseText.length, newEndLineText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    }
-                    //给收起设成蓝色
-                    spannableString.setSpan(ForegroundColorSpan(collapseTextColor), newEndLineText.length - collapseText.length, newEndLineText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     text = spannableString
                 }
-                if (mCallback != null) {
-                    mCallback!!.onExpand()
-                }
+                mCallback?.onExpand()
             } else {
                 lineCount = maxLineCount
                 // 省略文字和展开文案的宽度
@@ -104,7 +147,7 @@ class ExpandTextView : AppCompatTextView {
                 // 找出显示最后一行的文字
                 val start = sl.getLineStart(lineCount - 1)
                 val end = sl.getLineEnd(lineCount - 1)
-                val lineText = mText!!.substring(start, end)
+                val lineText = mText?.substring(start, end) ?: ""
                 // 将第最后一行最后的文字替换为 ellipsizeText和expandText
                 var endIndex = 0
                 for (i in lineText.length - 1 downTo 0) {
@@ -116,33 +159,49 @@ class ExpandTextView : AppCompatTextView {
                     }
                 }
                 // 新的文字
-                val newEndLineText = mText!!.substring(0, start) + lineText.substring(0, endIndex) + ellipsizeText + expandText
+                val newEndLineText = (mText?.substring(0, start) ?: "") + lineText.substring(
+                    0,
+                    endIndex
+                ) + ellipsizeText + expandText
                 //全部文字
-                val spannableString = SpannableString(newEndLineText)
-                //给查看全部设成监听
-                spannableString.setSpan(object : ClickableSpan() {
-                    override fun onClick(widget: View?) {
-                        if (mCallback != null) {
-                            mCallback!!.onExpandClick()
-                        }
+                val spannableString = SpannableString(newEndLineText).apply {
+                    //给查看全部设成监听
+                    setSpan(
+                        object : ClickableSpan() {
+                            override fun onClick(widget: View) {
+                                if (mCallback != null) {
+                                    mCallback!!.onExpandClick()
+                                }
+                            }
+                        },
+                        newEndLineText.length - expandText.length,
+                        newEndLineText.length,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    if (underlineEnable) {
+                        setSpan(
+                            UnderlineSpan(),
+                            newEndLineText.length - expandText.length,
+                            newEndLineText.length,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
                     }
-                }, newEndLineText.length - expandText.length, newEndLineText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                if (underlineEnable) {
-                    spannableString.setSpan(UnderlineSpan(), newEndLineText.length - expandText.length, newEndLineText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    //给查看全部设成颜色
+                    setSpan(
+                        expandTextColor,
+                        newEndLineText.length - expandText.length,
+                        newEndLineText.length,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
                 }
-                //给查看全部设成颜色
-                spannableString.setSpan(expandTextColor, newEndLineText.length - expandText.length, newEndLineText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
                 // 最终显示的文字
                 text = spannableString
-                if (mCallback != null) {
-                    mCallback!!.onCollapse()
-                }
+                mCallback?.onCollapse()
             }
         } else {
             text = mText
-            if (mCallback != null) {
-                mCallback!!.onLoss()
-            }
+            mCallback?.onLoss()
 
         }
         // 重新计算高度
