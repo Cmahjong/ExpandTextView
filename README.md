@@ -1,7 +1,8 @@
 # ExpandTextView
 
 展开收起控件
-[![](https://jitpack.io/v/yinjinyj/ExpandTextView.svg)](https://jitpack.io/#yinjinyj/ExpandTextView)
+[![](https://jitpack.io/v/Cmahjong/ExpandTextView.svg)](https://jitpack.io/#Cmahjong/ExpandTextView)
+
 
 其他先不说先看效果图
 
@@ -21,7 +22,7 @@ Step 1 Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 
 	dependencies {
-    	        compile 'com.github.yinjinyj:ExpandTextView:1.0.0'
+    	       implementation 'com.github.Cmahjong:ExpandTextView:2.0.1'
     	}
   
 Step 3该控件可以单独使用，也可以配合RecycleView一起使用，只是展开收起的状态需要维护demo里面的状态是直接放在实体类里面的，大家可以参考，也可以用其他方法去维护
