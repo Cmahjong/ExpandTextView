@@ -29,10 +29,12 @@ class DemoAdapter : BaseQuickAdapter<DemoBean, BaseViewHolder>(R.layout.item) {
             expandTextView.collapseEnable = true
             //是否给展开收起添加下划线
             expandTextView.underlineEnable = true
+            expandTextView.marginStartPX = 100
+            expandTextView.marginEndPX = 100
             //收起文案颜色
-            expandTextView.collapseTextColor = Color.parseColor("#FF1C7FFD")
+            expandTextView.collapseTextColor = Color.parseColor("#9c9c9d")
             //展开文案颜色
-            expandTextView.expandTextColor = Color.parseColor("#FFA66BF9")
+            expandTextView.expandTextColor = Color.parseColor("#1C7FFD")
             expandTextView.setText(item.content, item.state, object : Callback {
                 override fun onExpand() {
 

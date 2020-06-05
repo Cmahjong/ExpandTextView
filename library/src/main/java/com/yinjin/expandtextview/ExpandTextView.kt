@@ -93,7 +93,7 @@ class ExpandTextView : AppCompatTextView {
                 true
             )
         }
-
+        var result:SpannableString?=null
         // 总计行数
         var lineCount = sl.lineCount
         //总行数大于最大行数
@@ -105,7 +105,7 @@ class ExpandTextView : AppCompatTextView {
                     // 收起文案和源文字组成的新的文字
                     val newEndLineText = mText + collapseText
                     //收起文案和源文字组成的新的文字
-                    val spannableString = SpannableString(newEndLineText)
+                    result = SpannableString(newEndLineText)
                         .apply {
                             //给收起设成监听
                             setSpan(
@@ -138,7 +138,6 @@ class ExpandTextView : AppCompatTextView {
                                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                             )
                         }
-                    text = spannableString
                 }
                 mCallback?.onExpand()
             } else {
@@ -165,7 +164,7 @@ class ExpandTextView : AppCompatTextView {
                     endIndex
                 ) + ellipsizeText + expandText
                 //全部文字
-                val spannableString = SpannableString(newEndLineText).apply {
+                result = SpannableString(newEndLineText).apply {
                     //给查看全部设成监听
                     setSpan(
                         object : ClickableSpan() {
@@ -189,7 +188,7 @@ class ExpandTextView : AppCompatTextView {
                     }
                     //给查看全部设成颜色
                     setSpan(
-                        expandTextColor,
+                        ForegroundColorSpan(expandTextColor),
                         newEndLineText.length - expandText.length,
                         newEndLineText.length,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -197,23 +196,22 @@ class ExpandTextView : AppCompatTextView {
                 }
 
                 // 最终显示的文字
-                text = spannableString
+
                 mCallback?.onCollapse()
             }
         } else {
-            text = mText
+            result = SpannableString(mText)
             mCallback?.onLoss()
 
         }
         // 重新计算高度
-        var lineHeight = 0
+        var lineHeight = 0f
         for (i in 0 until lineCount) {
-            val lineBound = Rect()
-            sl.getLineBounds(i, lineBound)
-            lineHeight += lineBound.height()
+            lineHeight +=(paint.fontMetrics.descent - paint.fontMetrics.ascent)
         }
-        lineHeight = (paddingTop + paddingBottom + lineHeight * lineSpacingMultiplier).toInt()
-        setMeasuredDimension(measuredWidth, lineHeight)
+        lineHeight = paddingTop + paddingBottom + lineHeight* lineSpacingMultiplier
+        setMeasuredDimension(measuredWidth, lineHeight.toInt()+1)
+        text = result
     }
 
     /**
@@ -226,9 +224,7 @@ class ExpandTextView : AppCompatTextView {
         mText = text
         expandState = expanded
         mCallback = callback
-
-        // 设置要显示的文字，这一行必须要，否则 onMeasure 宽度测量不正确
-        setText(text)
+        invalidate()
     }
 
     /**
