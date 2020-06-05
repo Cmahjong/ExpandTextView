@@ -70,6 +70,7 @@ class ExpandTextView : AppCompatTextView {
         if (mText.isNullOrEmpty()) {
             setMeasuredDimension(measuredWidth, measuredHeight)
         }
+
         //StaticLayout对象
         val sl = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             StaticLayout.Builder.obtain(
@@ -77,7 +78,7 @@ class ExpandTextView : AppCompatTextView {
                 0,
                 mText?.length ?: 0,
                 paint,
-                measuredWidth - paddingLeft - paddingRight
+                resources.displayMetrics.widthPixels - paddingLeft - paddingRight
             ).apply {
                 setAlignment(Layout.Alignment.ALIGN_CENTER)
             }.build()
@@ -85,7 +86,7 @@ class ExpandTextView : AppCompatTextView {
             StaticLayout(
                 mText,
                 paint,
-                measuredWidth - paddingLeft - paddingRight,
+                resources.displayMetrics.widthPixels - paddingLeft - paddingRight,
                 Layout.Alignment.ALIGN_CENTER,
                 1f,
                 0f,
