@@ -46,6 +46,8 @@ class ExpandTextView : AppCompatTextView {
     var collapseEnable = false
     /** 是否添加下划线 */
     var underlineEnable = true
+    var marginStartPX = 0//marginStart
+    var marginEndPX = 0//marginStart
 
     constructor(context: Context) : super(context) {
         initTextView()
@@ -66,11 +68,9 @@ class ExpandTextView : AppCompatTextView {
     @SuppressLint("DrawAllocation")
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        // 文字计算辅助工具
-        if (mText.isNullOrEmpty()) {
-            setMeasuredDimension(measuredWidth, measuredHeight)
+        if (measuredWidth == 0) {
+            return
         }
-
         //StaticLayout对象
         val sl = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             StaticLayout.Builder.obtain(
@@ -78,7 +78,7 @@ class ExpandTextView : AppCompatTextView {
                 0,
                 mText?.length ?: 0,
                 paint,
-                resources.displayMetrics.widthPixels - paddingLeft - paddingRight
+                resources.displayMetrics.widthPixels - paddingLeft - paddingRight-marginStartPX-marginEndPX
             ).apply {
                 setAlignment(Layout.Alignment.ALIGN_CENTER)
             }.build()
@@ -86,7 +86,7 @@ class ExpandTextView : AppCompatTextView {
             StaticLayout(
                 mText,
                 paint,
-                resources.displayMetrics.widthPixels - paddingLeft - paddingRight,
+                resources.displayMetrics.widthPixels - paddingLeft - paddingRight-marginStartPX-marginEndPX,
                 Layout.Alignment.ALIGN_CENTER,
                 1f,
                 0f,
