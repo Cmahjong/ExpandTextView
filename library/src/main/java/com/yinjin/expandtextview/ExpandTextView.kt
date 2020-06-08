@@ -3,7 +3,6 @@ package com.yinjin.expandtextview
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Rect
 import android.os.Build
 import android.text.Layout
 import android.text.Spannable
@@ -71,6 +70,11 @@ class ExpandTextView : AppCompatTextView {
         if (measuredWidth == 0) {
             return
         }
+        if ((mText?.length?:0) == 0) {
+            return
+        }
+        val canUseWidth =
+            resources.displayMetrics.widthPixels - paddingLeft - paddingRight - marginStartPX - marginEndPX
         //StaticLayout对象
         val sl = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             StaticLayout.Builder.obtain(
@@ -78,7 +82,7 @@ class ExpandTextView : AppCompatTextView {
                 0,
                 mText?.length ?: 0,
                 paint,
-                resources.displayMetrics.widthPixels - paddingLeft - paddingRight-marginStartPX-marginEndPX
+                canUseWidth
             ).apply {
                 setAlignment(Layout.Alignment.ALIGN_CENTER)
             }.build()
@@ -86,7 +90,7 @@ class ExpandTextView : AppCompatTextView {
             StaticLayout(
                 mText,
                 paint,
-                resources.displayMetrics.widthPixels - paddingLeft - paddingRight-marginStartPX-marginEndPX,
+                canUseWidth,
                 Layout.Alignment.ALIGN_CENTER,
                 1f,
                 0f,
@@ -99,7 +103,6 @@ class ExpandTextView : AppCompatTextView {
         //总行数大于最大行数
         if (lineCount > maxLineCount) {
             if (expandState) {
-                text = mText
                 //是否支持收起功能
                 if (collapseEnable) {
                     // 收起文案和源文字组成的新的文字
@@ -141,28 +144,38 @@ class ExpandTextView : AppCompatTextView {
                 }
                 mCallback?.onExpand()
             } else {
+
                 lineCount = maxLineCount
                 // 省略文字和展开文案的宽度
                 val dotWidth = paint.measureText(ellipsizeText + expandText)
                 // 找出显示最后一行的文字
                 val start = sl.getLineStart(lineCount - 1)
                 val end = sl.getLineEnd(lineCount - 1)
-                val lineText = mText?.substring(start, end) ?: ""
+                var lineText = mText?.substring(start, end) ?: ""
                 // 将第最后一行最后的文字替换为 ellipsizeText和expandText
-                var endIndex = 0
-                for (i in lineText.length - 1 downTo 0) {
-                    val str = lineText.substring(i, lineText.length)
-                    // 找出文字宽度大于 ellipsizeText 的字符
-                    if (paint.measureText(str) >= dotWidth) {
-                        endIndex = i
-                        break
+                //如果有换行符的话，会出现收齐状态显示未占满全文状态，那么先判断收齐状态的情况下是否有换行符，然后文字内容加上省略符号是否超过可用宽度
+                lineText = lineText.replace("\r\n", "",true)
+                lineText = lineText.replace("\n", "",true)
+                var newEndLineText: String
+                if (paint.measureText(lineText + ellipsizeText + expandText) > canUseWidth) {
+                    var endIndex = 0
+                    for (i in lineText.length - 1 downTo 0) {
+                        val str = lineText.substring(i, lineText.length)
+                        // 找出文字宽度大于 ellipsizeText 的字符
+                        if (paint.measureText(str) >= dotWidth) {
+                            endIndex = i
+                            break
+                        }
                     }
+                    // 新的文字
+                    newEndLineText = (mText?.substring(0, start) ?: "") + lineText.substring(
+                        0,
+                        endIndex
+                    ) + ellipsizeText + expandText
+                } else {
+                    newEndLineText = (mText?.substring(0, start) ?: "") +lineText + ellipsizeText + expandText
                 }
-                // 新的文字
-                val newEndLineText = (mText?.substring(0, start) ?: "") + lineText.substring(
-                    0,
-                    endIndex
-                ) + ellipsizeText + expandText
+
                 //全部文字
                 result = SpannableString(newEndLineText).apply {
                     //给查看全部设成监听
@@ -207,9 +220,9 @@ class ExpandTextView : AppCompatTextView {
         // 重新计算高度
         var lineHeight = 0f
         for (i in 0 until lineCount) {
-            lineHeight +=(paint.fontMetrics.bottom - paint.fontMetrics.top)
+            lineHeight +=(paint.fontMetrics.bottom - paint.fontMetrics.top)* lineSpacingMultiplier
         }
-        lineHeight = paddingTop + paddingBottom + lineHeight* lineSpacingMultiplier
+        lineHeight += paddingTop + paddingBottom
         setMeasuredDimension(measuredWidth, lineHeight.toInt()+1)
         text = result
     }
