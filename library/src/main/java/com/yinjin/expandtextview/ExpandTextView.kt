@@ -114,9 +114,7 @@ class ExpandTextView : AppCompatTextView {
                             setSpan(
                                 object : ClickableSpan() {
                                     override fun onClick(widget: View) {
-                                        if (mCallback != null) {
-                                            mCallback!!.onCollapseClick()
-                                        }
+                                        mCallback?.onCollapseClick()
                                     }
 
                                 },
@@ -182,9 +180,7 @@ class ExpandTextView : AppCompatTextView {
                     setSpan(
                         object : ClickableSpan() {
                             override fun onClick(widget: View) {
-                                if (mCallback != null) {
-                                    mCallback!!.onExpandClick()
-                                }
+                                mCallback?.onExpandClick()
                             }
                         },
                         newEndLineText.length - expandText.length,
@@ -233,7 +229,7 @@ class ExpandTextView : AppCompatTextView {
      * @param expanded true：展开，false：收起
      * @param callback
      */
-    fun setText(text: String, expanded: Boolean, callback: Callback) {
+    fun setText(text: String, expanded: Boolean, callback: Callback?) {
         mText = text
         expandState = expanded
         mCallback = callback
