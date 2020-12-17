@@ -47,7 +47,7 @@ class ExpandTextView : AppCompatTextView {
     var underlineEnable = true
     var marginStartPX = 0//marginStart
     var marginEndPX = 0//marginStart
-
+    var clickEnable=true
     constructor(context: Context) : super(context) {
         initTextView()
     }
@@ -111,17 +111,20 @@ class ExpandTextView : AppCompatTextView {
                     result = SpannableString(newEndLineText)
                         .apply {
                             //给收起设成监听
-                            setSpan(
-                                object : ClickableSpan() {
-                                    override fun onClick(widget: View) {
-                                        mCallback?.onCollapseClick()
-                                    }
+                            if (clickEnable) {
+                                setSpan(
+                                    object : ClickableSpan() {
+                                        override fun onClick(widget: View) {
+                                            mCallback?.onCollapseClick()
+                                        }
 
-                                },
-                                newEndLineText.length - collapseText.length,
-                                newEndLineText.length,
-                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                            )
+                                    },
+                                    newEndLineText.length - collapseText.length,
+                                    newEndLineText.length,
+                                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                                )
+                            }
+
                             if (underlineEnable) {
                                 //给收起添加下划线
                                 setSpan(
@@ -177,16 +180,19 @@ class ExpandTextView : AppCompatTextView {
                 //全部文字
                 result = SpannableString(newEndLineText).apply {
                     //给查看全部设成监听
-                    setSpan(
-                        object : ClickableSpan() {
-                            override fun onClick(widget: View) {
-                                mCallback?.onExpandClick()
-                            }
-                        },
-                        newEndLineText.length - expandText.length,
-                        newEndLineText.length,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
+                    if (clickEnable) {
+                        setSpan(
+                            object : ClickableSpan() {
+                                override fun onClick(widget: View) {
+                                    mCallback?.onExpandClick()
+                                }
+                            },
+                            newEndLineText.length - expandText.length,
+                            newEndLineText.length,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+                    }
+
                     if (underlineEnable) {
                         setSpan(
                             UnderlineSpan(),
