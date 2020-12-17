@@ -22,7 +22,7 @@ Step 1 Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 
 	dependencies {
-    	       implementation 'com.github.Cmahjong:ExpandTextView:2.0.6'
+    	       implementation 'com.github.Cmahjong:ExpandTextView:2.0.7'
     	}
   
 Step 3该控件可以单独使用，也可以配合RecycleView一起使用，只是展开收起的状态需要维护demo里面的状态是直接放在实体类里面的，大家可以参考，也可以用其他方法去维护
