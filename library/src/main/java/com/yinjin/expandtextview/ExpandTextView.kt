@@ -235,7 +235,7 @@ class ExpandTextView : AppCompatTextView {
      * @param expanded true：展开，false：收起
      * @param callback
      */
-    fun setText(text: String, expanded: Boolean, callback: Callback?) {
+    fun setText(text: String?, expanded: Boolean, callback: Callback?) {
         mText = text
         expandState = expanded
         mCallback = callback
